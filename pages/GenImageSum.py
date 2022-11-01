@@ -23,7 +23,7 @@ def app():
     result_df_led=[]
     result_df_led_N=[]
     for filename in glob.glob(os.path.join(path, "*.csv")):
-        data[filename[38:-4]] = pd.read_csv(filename)
+        data[filename[28:-4]] = pd.read_csv(filename)
     
     colsel1,colsel2,colsel3 = st.columns(3)
     with colsel1:
