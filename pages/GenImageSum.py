@@ -16,14 +16,14 @@ def app():
     st.caption("You have the option to select from a library of pre-canned multi-composite spectra from the Dragonfly Surface Composition Modeling tools. By toggling parameters like camera type and illumination mode, we are able to generate a variety of color swatches for what DragonCam might see on Titan's surface.")
 
     #Creates drop-down to select surface reflectance
-    path = r'C:\ColorApp\MixedSpectraLib'                     # use your path
+    cwd =os.getcwd()
+    path= os.path.join( cwd,'MixedSpectraLib')             # use your path
     all_files = glob.glob(os.path.join(path, "*.csv"))     # advisable to use os.path.join as this makes concatenation OS independent
     data = {}
     result_df_led=[]
     result_df_led_N=[]
     for filename in glob.glob(os.path.join(path, "*.csv")):
-        data[filename[28:-4]] = pd.read_csv(filename)
-    st.write(data)
+        data[filename[38:-4]] = pd.read_csv(filename)
     
     colsel1,colsel2,colsel3 = st.columns(3)
     with colsel1:
