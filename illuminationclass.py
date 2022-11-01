@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
 import os
-import matplotlib.pyplot as plt
 import streamlit as st
 cwd =os.getcwd()
+
 #could also be photon source..think it again
 class illumination:
 	# create insolation class tht allows you to select mode
