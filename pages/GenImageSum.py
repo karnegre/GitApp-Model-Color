@@ -28,7 +28,8 @@ def app():
     with colsel1:
         specpick = st.selectbox(
         "Select a Spectra", data.keys(), help = "This is a library of pre-canned spectra from the Dragonfly Surface Composition Modeling App" )
-        compound=pd.DataFrame(data.get(specpick).iloc[:, 0:2])
+        compound=pd.DataFrame(data.get(specpick))
+#         compound=pd.DataFrame(data.get(specpick).iloc[:, 0:2])
         compound.set_index('wave', inplace=True)
         comp_export=compound.copy()
         comp_export['wave_nm']=[w*1000 for w in comp_export.index]
