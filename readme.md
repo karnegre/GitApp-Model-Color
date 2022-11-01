@@ -2,11 +2,11 @@
 
 Updated: 2022.11.01, 2021.06.12, 2021.18.11
 
-Beta 2.0 now available for testing: [Multi-Composite Modeling + Color Gen UI](https://karnegre-gitapp-model-color-app-v67zzz.streamlitapp.com/)
+2022.11.01: Beta 2.0 now available for testing: [Multi-Composite Modeling + Color Gen UI](https://karnegre-gitapp-model-color-app-v67zzz.streamlitapp.com/)
 
-Version 2.0 now includes a synthetic color generator tool using multi-composite mixtures.
+-Version 2.0 now includes a synthetic color generator tool using multi-composite mixtures.
 
-Beta 1.0 now available for testing: [Multi-Composite Spectra Modeling UI](https://share.streamlit.io/karnegre/dragonfly_compmodeling_ui/main/app.py).
+2021.06.12: Beta 1.0 now available for testing: [Multi-Composite Spectra Modeling UI](https://share.streamlit.io/karnegre/dragonfly_compmodeling_ui/main/app.py).
 
 The user-interface (UI) was developed using Streamlit. The UI is intended for [Dragonfly](https://dragonfly.jhuapl.edu/) team use as a modeling aid for determining the surface composition of Saturn's moon, Titan. 
 
@@ -86,5 +86,4 @@ There are two sets of instructions for prepping the data; one for uploading opti
         - r column contains the albedo 
        
     - Save the file as the name of the compound and as a .txt file
-### Data Upload
-Head to the app [Multi-Composite Spectra Modeling UI](https://share.streamlit.io/karnegre/dragonfly_compmodeling_ui/main/app.py) and complete the form under the Upload Data tab
+
