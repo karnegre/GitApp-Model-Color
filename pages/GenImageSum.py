@@ -23,7 +23,8 @@ def app():
     result_df_led_N=[]
     for filename in glob.glob(os.path.join(path, "*.csv")):
         data[filename[28:-4]] = pd.read_csv(filename)
-
+    st.write(data)
+    
     colsel1,colsel2,colsel3 = st.columns(3)
     with colsel1:
         specpick = st.selectbox(
