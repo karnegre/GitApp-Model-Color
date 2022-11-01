@@ -1,5 +1,5 @@
-import numpy as np 
-
+import numpy as np
+import streamlit as st
 
 def r0(n_complex):
 	#below eqn 8c, Shkuratov 1999
@@ -103,19 +103,33 @@ def shkuratov_coarsemix(c,n_complex,q,S,wavelength_um):
 	rho_f=0.
 	answer=0.
 
-	for ci,ni,Si in zip(c,n_complex,S):
+	if type(c) is list:
+		for ci,ni,Si in zip(c,n_complex,S):
 
-		tau=4*np.pi*ni.imag*Si/wavelength_um
+			tau=4*np.pi*ni.imag*Si/wavelength_um
 
-		rho_b+=ci*rb(tau,ni)
-		rho_f+=ci*rf(tau,ni)
+			rho_b+=ci*rb(tau,ni)
+			rho_f+=ci*rf(tau,ni)
 
-	rho_b*=q
-	rho_f*=q
-	rho_f+=(1-q)
+		rho_b*=q
+		rho_f*=q
+		rho_f+=(1-q)
 
-	answer = A_eqn12(rho_b,rho_f)
-	return answer
+		answer = A_eqn12(rho_b,rho_f)
+		return answer
+
+	else:
+		tau=4*np.pi*n_complex.imag*S/wavelength_um
+
+		rho_b+=c*rb(tau,n_complex)
+		rho_f+=c*rf(tau,n_complex)
+
+		rho_b*=q
+		rho_f*=q
+		rho_f+=(1-q)
+
+		answer = A_eqn12(rho_b,rho_f)
+		return answer
 
 
 #def shkuratov_coarsemix

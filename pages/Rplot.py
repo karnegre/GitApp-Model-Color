@@ -13,6 +13,10 @@ import shkuratov_ssa_models as shkrtv
 import rmodel as rm
 from plotly import express as px
 import base64
+import color
+import CleanData as clean
+from os.path import exists
+import FunctionLib as funk
 
 from streamlit import caching
 st.legacy_caching.clear_cache()
@@ -26,7 +30,7 @@ dfRLib= pd.DataFrame()
 #Platform independence
 cwd =os.getcwd()
 cleanIR_path= os.path.join( cwd,'cleaningcode','cleaned','R')
-
+IR_path_dirty= os.path.join( cwd,'cleaningcode','dirty','R')
 session_state = SessionState.get(SpectraDict = [],CurrentSpectraIndex=0,Num_Spectra_Prev=0,OC_select=[],restart=0,IR_select=[])
 # ------------------------------------------------------
 def app():
@@ -42,178 +46,9 @@ def app():
         IRfiles_selected =[]
         number_of_elements=0
         st.balloons()
-    create_dictionary(cleanIR_path)
+    funk.NewFileCheck(IR_path_dirty, ModelType='IR')
+    CompNameList,CompDict=funk.create_dictionary(cleanIR_path, ModelType='IR')
     process_sidebar()
-# # -------------------------------------------------------
-@st.cache(suppress_st_warning=True)
-def create_dictionary(path):
-    global CompNameList
-    global CompDict
-
-    for name in os.listdir(path):
-        if os.path.isfile(os.path.join(path, name)):
-            if name.endswith(".txt"):
-                namef= os.path.splitext(name)[0]
-                CompNameList.append(namef)
-                df = pd.read_csv(os.path.join(cleanIR_path,name))
-                df.set_index(['wave'],drop=False,inplace=True)
-                CompDict[namef]=df
- # -----------------------------------------------------------------------------------------------------
-def ReadIRLib():
-    global dfRLib
-    #global IRfiles_selected
-    global number_of_elements
-
-    if (number_of_elements==0):
-        return
-
-    cwd =os.getcwd()
-    filename = "Lib.xlsx"
-    path_file = os.sep.join([cwd, filename])
-
-    dfRLib=pd.read_excel(path_file,sheet_name="R Library")
-    st.header('Compound Information Table')
-
-    if (number_of_elements>=1):
-        st.header('Selected IR Information')
-        if (number_of_elements==1):
-            st.table(dfRLib[dfRLib['Possible Compounds on Titans Surface'].str.fullmatch(session_state.IR_select[0])])
-        elif (number_of_elements==2):
-            st.table(dfRLib[dfRLib['Possible Compounds on Titans Surface'].str.fullmatch(session_state.IR_select[0]) |
-            dfRLib['Possible Compounds on Titans Surface'].str.fullmatch(session_state.IR_select[1])])
-        elif (number_of_elements==3):
-            st.table(dfRLib[dfRLib['Possible Compounds on Titans Surface'].str.fullmatch(session_state.IR_select[0]) |
-            dfRLib['Possible Compounds on Titans Surface'].str.fullmatch(session_state.IR_select[1])|
-            dfRLib['Possible Compounds on Titans Surface'].str.fullmatch(session_state.IR_select[2])])
-        elif (number_of_elements==4):
-            st.table(dfRLib[dfRLib['Possible Compounds on Titans Surface'].str.fullmatch(session_state.IR_select[0]) |
-            dfRLib['Possible Compounds on Titans Surface'].str.fullmatch(session_state.IR_select[1])|
-            dfRLib['Possible Compounds on Titans Surface'].str.fullmatch(session_state.IR_select[2])|
-            dfRLib['Possible Compounds on Titans Surface'].str.fullmatch(session_state.IR_select[3])])
-        elif (number_of_elements>=5):
-            st.table(dfRLib[dfRLib['Possible Compounds on Titans Surface'].str.fullmatch(session_state.IR_select[0]) |
-            dfRLib['Possible Compounds on Titans Surface'].str.fullmatch(session_state.IR_select[1])|
-            dfRLib['Possible Compounds on Titans Surface'].str.fullmatch(session_state.IR_select[2])|
-            dfRLib['Possible Compounds on Titans Surface'].str.fullmatch(session_state.IR_select[3])|
-            dfRLib['Possible Compounds on Titans Surface'].str.fullmatch(session_state.IR_select[4])])
-# -----------------------------------------------------------------------------------------------------
-def createthismix(mix):
-    global number_of_elements
-    if (number_of_elements==2):
-        thismix=[[a,b] for a,b in zip(mix[session_state.IR_select[0]],mix[session_state.IR_select[1]])]
-    elif (number_of_elements==3):
-        thismix=[[a,b,c] for a,b,c in zip(mix[session_state.IR_select[0]],mix[session_state.IR_select[1]],mix[session_state.IR_select[2]])]
-    elif (number_of_elements==4):
-        thismix=[[a,b,c,d] for a,b,c,d in zip(mix[session_state.IR_select[0]],mix[session_state.IR_select[1]],mix[session_state.IR_select[2]],mix[session_state.IR_select[3]])]
-    elif (number_of_elements==5):
-        thismix=[[a,b,c,d,e] for a,b,c,d,e in zip(mix[session_state.IR_select[0]],mix[session_state.IR_select[1]],mix[session_state.IR_select[2]],mix[session_state.IR_select[3]],mix[session_state.IR_select[4]])]
-    else:
-        thismix=[]
-    return thismix
-# -----------------------------------------------------------------------------------------------------
-def StartCalculation(files,mixesArray):
-    global CompDict
-    global number_of_elements
-    dataname=[session_state.IR_select[i] for i in range(number_of_elements)]
-    datanamecombo='-'.join(dataname)
-
-    mix=pd.DataFrame({'wave':CompDict[session_state.IR_select[0]].wave})
-    mix.set_index(mix.wave,inplace=True)
-    result=pd.DataFrame(index=mix.index)
-    visresult=pd.DataFrame()
-
-    for i in range(number_of_elements):
-        mix[session_state.IR_select[i]]=CompDict[session_state.IR_select[i]].r
-    print(mix)
-
-    concentrations=[mm/100 for mm in mixesArray]
-
-    if number_of_elements == 1:
-        thismix = mix
-        thismix.drop(['wave'], axis=1, inplace=True)
-    else:
-        thismix=createthismix(mix)
-
-    if (number_of_elements==1):
-        result=thismix
-        visresult=result.copy().truncate(after=1.05)
-        fig1 = px.line(visresult)
-        fig1.update_xaxes(title_text='Wavelength (μm)')
-        fig1.update_yaxes(title_text='Reflectance')
-        fig1.update_layout(legend_title_text='Concentrations')
-        fig1.update_layout(showlegend=True, width=1100,height=700,margin= dict(l=1,r=1,b=1,t=1), font=dict(color='#383635', size=20))
-
-
-        fig2 = px.line(result)
-        fig2.update_xaxes(title_text='Wavelength (μm)')
-        fig2.update_yaxes(title_text='Reflectance')
-        fig2.update_layout(legend_title_text='Concentrations')
-        fig2.update_layout(showlegend=True, width=1100,height=700,margin= dict(l=1,r=1,b=1,t=1), font=dict(color='#383635', size=20))
-
-        col1, col2 = st.columns((1,1))
-        with col1:
-            st.header("Visible Spectra")
-            st.plotly_chart(fig1, use_container_width=True)
-            st.header("Visible Spectra Data")
-            st.dataframe(visresult)
-            csv = visresult.to_csv(index=True)
-            st.download_button(label="Download data as CSV",data=csv,file_name=datanamecombo +'.csv', mime='text/csv')
-        with col2:
-            st.header("Visible + IR Spectra")
-            st.plotly_chart(fig2, use_container_width=True)
-            st.header("Visible + IR Spectra Data")
-            st.dataframe(result)
-            csv2 = result.to_csv(index=True)
-            st.download_button(label="Download data as CSV",data=csv2,file_name=datanamecombo +'.csv', mime='text/csv')
-
-        return mix
-    elif (number_of_elements>=2):
-        colname=''
-        colnamearray=[]
-        for n,i in enumerate(session_state.IR_select):
-                # to limit the amount of compounds to 5 possible selections by the user
-            if(n<=4):
-                if (n==number_of_elements-1):
-                    colname+=str(mixesArray[n])[0:3]
-                else:
-                    colname+=str(mixesArray[n])[0:3]+"_"#[0:2]
-
-        mix[colname]=[rm.linearmixingmodel(concentrations,a,w) for a,w in zip(thismix,mix.wave)]
-        result[colname]=mix[colname]
-
-        for i in range(number_of_elements):
-            result[session_state.IR_select[i]]=CompDict[session_state.IR_select[i]].r
-
-        visresult=result.copy().truncate(after=1.05)
-        fig1 = px.line(visresult)
-        fig1.update_xaxes(title_text='Wavelength (μm)')
-        fig1.update_yaxes(title_text='Reflectance')
-        fig1.update_layout(legend_title_text='Concentrations')
-        fig1.update_layout(showlegend=True, width=1100,height=700,margin= dict(l=1,r=1,b=1,t=1), font=dict(color='#383635', size=20))
-
-        fig2 = px.line(result)
-        fig2.update_xaxes(title_text='Wavelength (μm)')
-        fig2.update_yaxes(title_text='Reflectance')
-        fig2.update_layout(legend_title_text='Concentrations')
-        fig2.update_layout(showlegend=True, width=1100,height=700,margin= dict(l=1,r=1,b=1,t=1), font=dict(color='#383635', size=20))
-
-        col1, col2 = st.columns((1,1))
-        with col1:
-            st.header("Visible Spectra")
-            st.plotly_chart(fig1, use_container_width=True)
-            st.header("Visible Spectra Data")
-            st.dataframe(visresult)
-            csv = visresult.to_csv(index=True)
-            st.download_button(label="Download data as CSV",data=csv,file_name=datanamecombo +'.csv', mime='text/csv')
-        with col2:
-            st.header("Visible + IR Spectra")
-            st.plotly_chart(fig2, use_container_width=True)
-            st.header("Visible + IR Spectra Data")
-            st.dataframe(result)
-            csv2 = result.to_csv(index=True)
-            st.download_button(label="Download data as CSV",data=csv2,file_name=datanamecombo +'.csv', mime='text/csv')
-
-        return mix
 # ---------------------------------------------------------
 def process_sidebar():
 
@@ -243,7 +78,7 @@ def process_sidebar():
         Lib=pd.read_excel(path_file,sheet_name="R Library")
 
         GroupLib=Lib[Lib.Grouping.str.match(Group_selected)]
-        IRfile_list = GroupLib['Possible Compounds on Titans Surface'].tolist()
+        IRfile_list = GroupLib['Compound'].tolist()
         IRfiles_selected = st.sidebar.multiselect(label="Compounds",options=IRfile_list)
 
         number_ir = len(IRfiles_selected)
@@ -273,7 +108,8 @@ def process_sidebar():
             session_state.SpectraDict=[]
             session_state.GrainDict=[]
 
-        ReadIRLib()
+        funk.ReadLib(number_of_elements, ModelType='IR')
+        # ReadIRLib()
 
         if (number_of_elements==1):
             IR_conc=100
@@ -286,7 +122,7 @@ def process_sidebar():
 
             if (number_of_elements>=1 ):
                     if (st.sidebar.button("Start Calculation")):
-                        IRmodel=StartCalculation(IRfiles_selected,concarray)
+                        funk.StartCalculation(IRfiles_selected,concarray, number_of_elements, S=None, p=None)
 
         elif (number_of_elements>=2):
 #-----------------------ITEM 2: Select concentration--------------------------------------
@@ -327,4 +163,4 @@ def process_sidebar():
 
             if (number_of_elements>=1 ):
                     if (st.sidebar.button("Start Calculation")):
-                        IRmodel=StartCalculation(session_state.IR_select,concarray)
+                        funk.StartCalculation(session_state.IR_select, concarray, number_of_elements, S=None, p=None)

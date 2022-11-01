@@ -23,7 +23,7 @@ def app():
         st.write("")
 
 # #DESCRIPTION Orientation-----------------------------
-    col4, col5, col6 = st.columns([1,4,2])
+    col4, col5, col6 = st.columns([2,10,3])
 
     with col4:
         st.write("")
@@ -31,16 +31,13 @@ def app():
     with col5:
 
         st.markdown(
-
-            # _________________________________________________________________________________________________________________________________
-            # ### Description
-            # + The Dragonfly Surface Composition Modeling (DSCM) App is a linear mixing model, which utilizes optical constants and reflectance spectra avaliable in literature to model..
-            # + Developed using the Shkuratov Model (1999), albedo (reflectance) of a surface can be calculated and serve as an approximation tool for the Dragonfly mission to Titan.
-            # + Insert link to Shkuratov paper here??
-            #
-            # ### Notation
-            # + Tholins are named in accordance to syntax in papers. Visit DOI for more information.
-            """
+        """
+            _________________________________________________________________________________________________________________________________
+            #### Welcome to The Dragonfly Surface Composition Modeling and Synthetic Color App!
+             + This user-interface was created to support the New Frontiers mission to Titan, ands hosts features such as:
+                + A database library filled with optical constant and reflectance data from literature of compounds antiicipated on Titan's surface.
+                + Two modeling tools for creating multi-composite mixtures using optical constants [Shkuratov Model (1999)] and reflectance data, respectively.
+                + A synthetic color generation tool for approximating what DragonCam might see multi-composite mixtures as at Titan's surface.
             ___________________________________________________________________________________________________________________________________________________________________________________________________
             """
             )
@@ -48,7 +45,7 @@ def app():
         st.write("")
 
 #LIB Orientation-----------------------------
-    col7, col8, col9 = st.columns([1,4,3])
+    col7, col8, col9 = st.columns([2,8,3])
 
     with col7:
         st.write("")
@@ -68,12 +65,12 @@ def app():
 
         if libpick == 'Optical Constant Library':
 
-            dfOLib=pd.read_excel(path_file,sheet_name="O Library").set_index("Possible Compounds on Titans Surface")
+            dfOLib=pd.read_excel(path_file,sheet_name="O Library").set_index("Compound")
             st.table(dfOLib)
 
         if libpick == 'Reflectance Spectra Library':
 
-            dfRLib=pd.read_excel(path_file,sheet_name="R Library").set_index("Possible Compounds on Titans Surface")
+            dfRLib=pd.read_excel(path_file,sheet_name="R Library").set_index("Compound")
             st.table(dfRLib)
 
         else:
