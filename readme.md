@@ -1,6 +1,9 @@
-## Multi-Composite Modeling UI
+## Multi-Composite Modeling + Color Gen. UI
 
-Updated: 2021.06.12, 2021.18.11
+Updated: 2022.11.01, 2021.06.12, 2021.18.11
+
+Beta 2.0 now available for testing: [Multi-Composite Modeling + Color Gen UI](https://karnegre-gitapp-model-color-app-v67zzz.streamlitapp.com/)
+Version 2.0 now includes a synthetic color generator tool using multi-composite mixtures.
 
 Beta 1.0 now available for testing: [Multi-Composite Spectra Modeling UI](https://share.streamlit.io/karnegre/dragonfly_compmodeling_ui/main/app.py).
 
@@ -11,7 +14,7 @@ Models used include an intimate mixing model using the [Shkuratov model](https:/
 ## Installation
 
 **Note: You only need to install Dragonfly_CompModeling_UI if you want to contribute or run it 
-locally. If you just want to use it, go [here](https://share.streamlit.io/karnegre/dragonfly_compmodeling_ui/main/app.py).**
+locally. If you just want to use it, go [here](https://karnegre-gitapp-model-color-app-v67zzz.streamlitapp.com/).**
 
 ```bash
 git clone https://github.com/karnegre/Dragonfly_CompModeling_UI.git
@@ -23,6 +26,8 @@ pip install -r requirements.txt
 ```bash
 streamlit run app.py
 ```
+In order to run this app locally, you must run it using streamlit version 1.2.0. Find requirements for your local system in the requirements.txt file
+
 ## Using the Models
 The app contains two different models for creating multi-composite spectra: Optical Constant (OC) model and Reflectance Spectra (RS) model. The following steps are how-tos for using them:
 ### Optical Constant Modeling
