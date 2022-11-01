@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 import time
 from PIL import Image
-import SessionState
 import os
 import os.path
 import cmath
