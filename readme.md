@@ -3,6 +3,7 @@
 Updated: 2022.11.01, 2021.06.12, 2021.18.11
 
 Beta 2.0 now available for testing: [Multi-Composite Modeling + Color Gen UI](https://karnegre-gitapp-model-color-app-v67zzz.streamlitapp.com/)
+
 Version 2.0 now includes a synthetic color generator tool using multi-composite mixtures.
 
 Beta 1.0 now available for testing: [Multi-Composite Spectra Modeling UI](https://share.streamlit.io/karnegre/dragonfly_compmodeling_ui/main/app.py).
