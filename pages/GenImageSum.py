@@ -11,7 +11,7 @@ import glob
 
 # -----------------------Function Library--------------------------------------
 def app():
-    st.header("Welcome to the Generate Image Summary Tool")
+    st.header("Welcome to the Synthetic Color Tool")
     # st.subheader("You have the option to select from a library of pre-canned multi-composite spectra from the Dragonfly Surface Composition Modeling tools")
     st.caption("You have the option to select from a library of pre-canned multi-composite spectra from the Dragonfly Surface Composition Modeling tools. By toggling parameters like camera type and illumination mode, we are able to generate a variety of color swatches for what DragonCam might see on Titan's surface.")
 
@@ -22,13 +22,14 @@ def app():
     data = {}
     result_df_led=[]
     result_df_led_N=[]
-    for filename in glob.glob(os.path.join(path, "*.csv")):
-        data[filename[40:-4]] = pd.read_csv(filename)
-    
+    for filename in all_files:
+        data[filename[38:-4]] = pd.read_csv(filename)
+        # data[filename[40:-4]] = pd.read_csv(filename)
+
     colsel1,colsel2,colsel3 = st.columns(3)
     with colsel1:
         specpick = st.selectbox(
-        "Select a Spectra", data.keys(), help = "This is a library of pre-canned spectra from the Dragonfly Surface Composition Modeling App" )
+        "Select a Spectra", sorted(data.keys()), help = "This is a library of pre-canned spectra from the Dragonfly Surface Composition Modeling App" )
         compound=pd.DataFrame(data.get(specpick).iloc[:, 0:2])
         compound.set_index('wave', inplace=True)
         comp_export=compound.copy()

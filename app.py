@@ -23,7 +23,7 @@ st.sidebar.title('Dragonfly Surface Composition Modeling')
 app.add_page("Home", Landing.app)
 app.add_page("Optical Constant Modeling", OCplot.app)
 app.add_page("Reflectance Spectra Modeling", Rplot.app)
-app.add_page("Generate Image Summary", GenImageSum.app)
+app.add_page("Synthetic Color Tool", GenImageSum.app)
 # app.add_page("Beta Tester Feedback", Feedback.app)
 # app.add_page("Upload Data", Upload.app)
 
