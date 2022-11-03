@@ -23,8 +23,7 @@ def app():
     result_df_led=[]
     result_df_led_N=[]
     for filename in all_files:
-        data[filename[38:-4]] = pd.read_csv(filename)
-        # data[filename[40:-4]] = pd.read_csv(filename)
+        data[filename[40:-4]] = pd.read_csv(filename)
 
     colsel1,colsel2,colsel3 = st.columns(3)
     with colsel1:
@@ -53,7 +52,7 @@ def app():
     col1,col2 = st.columns(2)
     with col1:
         compound.index = [w*1000 for w in compound.index]
-        fig= plt.figure(figsize=(5.95, 2.65),dpi=300)
+        fig= plt.figure(figsize=(6, 3),dpi=300)
         plt.plot(compound.truncate(after=1250))  # Plot some data on the (implicit) axes.
         plt.xlabel('Wavelength (nm)')
         plt.ylabel('Reflactance')
