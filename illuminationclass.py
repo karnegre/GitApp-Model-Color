@@ -9,7 +9,7 @@ class illumination:
 	# create insolation class tht allows you to select mode
         # modes: Day (just DISR, LEDS off), Night (all LEDs on), Day+ (DISR + LEDS on)
         # add modes for just select LEDS (?)
-        def __init__(self,mode):
+        def __init__(self,mode,LED_bands=None):
             self.numberofLEDs={'band1':8,'band2':12,'band3':16,'band4':20,'band5':12,'band6':20,'band7':20,'band8':20,'band9':20}
 
             DISR= pd.read_csv(os.sep.join([cwd, 'color', 'DISRspectrumUniformWavelegnths.csv']),sep=',',names=['wave_nm','flux'], skiprows=1)
@@ -45,8 +45,7 @@ class illumination:
 
             if mode == 'Single':
                 self.mode=mode
-                # st.write(LED)
-                self.LED_bands= st.multiselect('Select your single LED band(s): ',['band1','band2','band3','band4','band5','band6','band7','band8','band9'])
-                # st.write(LED_bands)
-                self.fluxspectrum = pd.DataFrame({'wave_um':LED.wave_nm,'flux':LED[self.LED_bands].sum(axis=1)})
+                # self.LED_bands= st.multiselect('Select your single LED band(s): ',['band1','band2','band3','band4','band5','band6','band7','band8','band9'])
+                self.LED_bands=LED_bands
+                self.fluxspectrum = pd.DataFrame({'wave_nm':LED.wave_nm,'flux':LED[self.LED_bands].sum(axis=1)})
                 self.description="This mode activates user-specific LED bands as the illumination mode to observe at discrete wavelengths"

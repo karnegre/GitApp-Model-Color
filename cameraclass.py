@@ -121,7 +121,6 @@ def pixelobserve(insolation,surfrefl,camera,integrationtime_s,noise=None):
 	#			  assumed column names: wave_nm, refl
 	# camera: see object above
 
-
 	if integrationtime_s ==None:
 		integrationtime_s=camera.integrationtime_s
 

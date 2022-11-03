@@ -22,6 +22,7 @@ def app():
     data = {}
     result_df_led=[]
     result_df_led_N=[]
+    LED_bands=[]
     for filename in all_files:
         data[filename[40:-4]] = pd.read_csv(filename)
 
@@ -44,6 +45,8 @@ def app():
     with colsel3:
         #this can be changed to st.multiselect to select multiple illumination modes. Im only doing one selection for aesthetics
         ilumpick= st.selectbox("Select a illumination mode",['Day','Night','Day+', 'Single'])
+        if ilumpick == 'Single':
+            LED_bands= st.multiselect('Select your single LED band(s): ',['band1','band2','band3','band4','band5','band6','band7','band8','band9'])
         # int_time=st.number_input('Input the integration time in seconds: ', min_value= .0001, max_value=1800.000)
         # int_time = 0.001
 
@@ -62,7 +65,10 @@ def app():
         st.pyplot(fig)
 
     # for i in ilumpick:
-    mode=il.illumination(ilumpick)
+    mode=il.illumination(ilumpick,LED_bands)
+    # When we sum Day+ in the illum class we sum both the wave_nm and flux columns putting the wavelength range at 800-2098 instead of 400-1049
+    if ilumpick == 'Day+':
+        mode.fluxspectrum.wave_nm=mode.fluxspectrum.wave_nm/2
     thispix=cc.pixelobserve(mode,comp_export,cam,cam.integrationtime_s)
     calibration=cc.pixelobserve(mode,white,cam,cam.integrationtime_s)
     normpix= thispix/calibration
@@ -72,7 +78,7 @@ def app():
 
     with col2:
 
-        illumfig, ax= plt.subplots(figsize=(6, 3),dpi=300)
+        illumfig, ax= plt.subplots(figsize=(5.95, 2.75),dpi=300)
         ax2=ax.twinx()
         ax.plot(mode.fluxspectrum.wave_nm, mode.fluxspectrum.flux, label= str(ilumpick) + ' illumination spectra', color = 'k')  # Plot some data on the (implicit) axes.
         ax.set_xlabel('Wavelength (nm)')
